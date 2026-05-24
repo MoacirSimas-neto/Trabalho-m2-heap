@@ -1,43 +1,39 @@
-import java.util.PriorityQueue;
-import java.util.Queue;
-
-import entidades.Pessoa;
+import entidades.Paciente;
 import estatica.FilaComPrioridade;
 
 public class Main {
-    public static void main(String args[]){
-        System.out.println("--- Fila de Inteiros ---");
+    public static void main(String[] args) {
+        FilaComPrioridade fila = new FilaComPrioridade(10);
 
-        FilaComPrioridade<Integer> fila = new FilaComPrioridade<>(10);
+        fila.enfileirar(new Paciente("Carlos", 2, 45, false));
+        System.out.println("Após inserir Carlos: " + fila);
 
-        fila.enfileirar(1);
-        fila.enfileirar(3);
-        fila.enfileirar(2);
+        fila.enfileirar(new Paciente("Maria", 5, 5, false));
+        System.out.println("Após inserir Maria: " + fila);
 
-        System.out.println(fila);
+        fila.enfileirar(new Paciente("João", 3, 20, false));
+        System.out.println("Após inserir João: " + fila);
 
-        System.out.println("\n--- Fila de Pessoas ---");
+        fila.enfileirar(new Paciente("Beatriz", 3, 35, true));
+        System.out.println("Após inserir Beatriz: " + fila);
 
-        FilaComPrioridade<Pessoa> filaPessoas = new FilaComPrioridade<>(10);
+        fila.enfileirar(new Paciente("Pedro", 5, 2, false));
+        System.out.println("Após inserir Pedro: " + fila);
 
-        filaPessoas.enfileirar(new Pessoa("Adão", 1));
-        filaPessoas.enfileirar(new Pessoa("Carlos", 3));
-        filaPessoas.enfileirar(new Pessoa("Bruno", 2));
+        fila.enfileirar(new Paciente("Helena", 2, 45, true));
+        System.out.println("Após inserir Helena: " + fila);
 
-        while (!filaPessoas.estaVazia()) {
-            System.out.println(filaPessoas.desenfileirar());
-        }
+        System.out.println("\nOrdem de atendimento:");
+        System.out.printf("%-12s %-10s %-8s %-12s%n", "Nome", "Urgência", "Espera", "Vulnerável");
+        System.out.println("------------------------------------------------");
 
-        System.out.println("\n--- Fila de Pessoas (PriorityQueue) ---");
-
-        Queue<Pessoa> filaPessoasJava = new PriorityQueue<>(10);
-
-        filaPessoasJava.add(new Pessoa("Adão", 1));
-        filaPessoasJava.add(new Pessoa("Carlos", 3));
-        filaPessoasJava.add(new Pessoa("Bruno", 2));
-
-        while (!filaPessoasJava.isEmpty()) {
-            System.out.println(filaPessoasJava.poll());
+        while (!fila.estaVazia()) {
+            Paciente p = fila.desenfileirar();
+            System.out.printf("%-12s %-10d %-8d %-12s%n",
+                    p.getNome(),
+                    p.getNivelUrgencia(),
+                    p.getTempoEsperaMinutos(),
+                    p.isGrupoVulneravel() ? "Sim" : "Não");
         }
     }
 }

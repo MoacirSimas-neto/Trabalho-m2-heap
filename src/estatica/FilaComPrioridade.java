@@ -1,53 +1,103 @@
 package estatica;
 
-public class FilaComPrioridade<T> extends FilaEstatica<T> {
+import entidades.Paciente;
+
+public class FilaComPrioridade {
+    private Paciente[] heap;
+    private int tamanho;
 
     public FilaComPrioridade(int capacidade) {
-        super(capacidade);
+        heap = new Paciente[capacidade];
+        tamanho = 0;
     }
 
-    @Override
-    public void enfileirar(T elemento) {
+    public boolean estaVazia() {
+        return tamanho == 0;
+    }
+
+    public boolean estaCheia() {
+        return tamanho == heap.length;
+    }
+
+    public void enfileirar(Paciente paciente) {
         if (estaCheia()) {
-            throw new RuntimeException("A fila está cheia.");
+            throw new RuntimeException("Fila cheia");
         }
 
-        Comparable<T> elementoOrdenavel = (Comparable<T>) elemento;
+        heap[tamanho] = paciente;
+        sobeHeap(tamanho);
+        tamanho++;
+    }
 
-        int posicao;
-        for (posicao = 0; posicao < tamanho(); posicao++) {
-            if (elementoOrdenavel.compareTo(elementos[posicao]) < 0) {
+    public Paciente desenfileirar() {
+        if (estaVazia()) {
+            throw new RuntimeException("Fila vazia");
+        }
+
+        Paciente raiz = heap[0];
+        tamanho--;
+        heap[0] = heap[tamanho];
+        heap[tamanho] = null;
+
+        if (!estaVazia()) {
+            desceHeap(0);
+        }
+
+        return raiz;
+    }
+
+    private void sobeHeap(int indice) {
+        while (indice > 0) {
+            int pai = (indice - 1) / 2;
+
+            if (heap[indice].compareTo(heap[pai]) > 0) {
+                trocar(indice, pai);
+                indice = pai;
+            } else {
                 break;
             }
         }
-
-        adicionaPosicao(posicao, elemento);
     }
 
-    public void adicionaPosicao(int posicao, T elemento) {
-		if (posicao < 0 || posicao > tamanho) {
-			throw new IllegalArgumentException("Posição inválida");
-		}
+    private void desceHeap(int indice) {
+        while (true) {
+            int filhoEsquerdo = 2 * indice + 1;
+            int filhoDireito = 2 * indice + 2;
+            int maior = indice;
 
-        // Mover todos os elementos
-		for (int i = tamanho - 1; i >= posicao; i--) {
-			elementos[i+1] = elementos[i];
-		}
+            if (filhoEsquerdo < tamanho && heap[filhoEsquerdo].compareTo(heap[maior]) > 0) {
+                maior = filhoEsquerdo;
+            }
 
-		elementos[posicao] = elemento;
-		tamanho++;
-	}
+            if (filhoDireito < tamanho && heap[filhoDireito].compareTo(heap[maior]) > 0) {
+                maior = filhoDireito;
+            }
+
+            if (maior != indice) {
+                trocar(indice, maior);
+                indice = maior;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void trocar(int i, int j) {
+        Paciente aux = heap[i];
+        heap[i] = heap[j];
+        heap[j] = aux;
+    }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
+        String texto = "[";
         for (int i = 0; i < tamanho; i++) {
-            sb.append(elementos[i]);
+            texto += heap[i];
             if (i < tamanho - 1) {
-                sb.append(", ");
+                texto += ", ";
             }
         }
-        sb.append("]");
-        return sb.toString();
+        texto += "]";
+        return texto;
     }
 }
