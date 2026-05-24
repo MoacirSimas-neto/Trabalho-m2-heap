@@ -74,3 +74,4 @@ O projeto possui workflow para publicação automática do Javadoc no GitHub Pag
 Para funcionar corretamente, é necessário ativar no repositório a opção:
 
 `Settings > Pages > Source > GitHub Actions`
+Última atualização: 24/05/2026
